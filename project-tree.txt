@@ -1,0 +1,68 @@
+Project Tree:
+
+├── check-fixes.js
+├── commands
+│   ├── admin
+│   │   └── maintenance.js
+│   ├── backup.js
+│   ├── info
+│   │   ├── botinfo.js
+│   │   ├── botstats.js
+│   │   ├── istatistik.js
+│   │   ├── ping.js
+│   │   ├── server-info.js
+│   │   └── yardım.js
+│   ├── logs
+│   │   ├── logs-disable.js
+│   │   ├── logs-edit.js
+│   │   └── logs-setup.js
+│   ├── moderation
+│   │   ├── ban.js
+│   │   ├── clear.js
+│   │   ├── kick.js
+│   │   ├── lock.js
+│   │   ├── timeout.js
+│   │   ├── unban.js
+│   │   ├── unlock.js
+│   │   └── untimeout.js
+│   └── tickets
+│       ├── category-add.js
+│       ├── category-clear.js
+│       ├── category-settings.js
+│       ├── ticket-close.js
+│       ├── ticket-disable.js
+│       └── ticket-setup.js
+├── config
+│   ├── commands.js
+│   ├── config.js
+│   └── permissions.js
+├── data
+│   └── defaultTopics.js
+├── events
+│   ├── channelEvents.js
+│   ├── interactionCreate.js
+│   ├── logEvents.js
+│   ├── memberEvents.js
+│   ├── messageEvents.js
+│   ├── ready.js
+│   ├── roleEvents.js
+│   ├── setupEvents.js
+│   ├── ticketEvents.js
+│   └── voiceEvents.js
+├── index.js
+├── package-lock.json
+├── package.json
+├── project-tree.txt
+├── scripts
+│   ├── deploy-commands.js
+│   ├── real_db_test.js
+│   └── showTree.cjs
+└── utils
+    ├── backup.js
+    ├── database.js
+    ├── helpers.js
+    ├── logger.js
+    ├── performanceMonitor.js
+    ├── rateLimiter.js
+    ├── startupCheck.js
+    └── ticketManager.js

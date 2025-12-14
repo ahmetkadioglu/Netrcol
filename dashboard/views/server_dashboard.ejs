@@ -1,0 +1,24 @@
+<% layout('layout') %>
+
+<div class="content-block">
+    <h2>Welcome to <%= guild.name %>'s Control Panel</h2>
+    <p style="color: var(--text-muted); margin-bottom: 20px;">Use the sidebar to configure the bot's features.</p>
+    
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px;">
+        <div style="background: var(--content-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
+            <i class="fa-solid fa-users" style="color: var(--primary);"></i>
+            <h4 style="margin-top: 10px;">Members</h4>
+            <p style="font-size: 1.5rem; font-weight: 700;"><%= guild.memberCount %></p>
+        </div>
+        <div style="background: var(--content-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
+            <i class="fa-solid fa-check" style="color: var(--success);"></i>
+            <h4 style="margin-top: 10px;">Active Modules</h4>
+            <p style="font-size: 1.5rem; font-weight: 700;">6 / 8</p>
+        </div>
+        <div style="background: var(--content-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
+            <i class="fa-solid fa-file-lines" style="color: var(--accent);"></i>
+            <h4 style="margin-top: 10px;">Total Logs</h4>
+            <p style="font-size: 1.5rem; font-weight: 700;">~5000</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,257 @@
+{
+  "activity_logs": [],
+  "active_jails": [],
+  "warnings": [],
+  "user_data": [],
+  "jtc_channels": [],
+  "active_tickets": [],
+  "ticket_settings": [
+    {
+      "_id": "6939b6b7fc73936fd779490c",
+      "guildId": "1428770157643305133",
+      "creationChannelId": null,
+      "enabled": false,
+      "panelBtnCreate": null,
+      "panelBtnRules": null,
+      "panelDescription": null,
+      "panelTitle": null,
+      "rulesDescription": null,
+      "rulesTitle": null,
+      "styleClaim": null,
+      "styleClose": null,
+      "styleCreate": null,
+      "styleRules": null,
+      "styleSettings": null,
+      "ticketBtnClaim": null,
+      "ticketBtnClose": null,
+      "ticketBtnSettings": null,
+      "ticketDescription": null
+    }
+  ],
+  "dashboard_content_faq": [
+    {
+      "_id": "6935f76a1a93e102e204232b",
+      "question": "How do I invite the bot to my server?",
+      "answer": "Click the \"Invite to Server\" button on our homepage. You need \"Manage Server\" permissions to add the bot.",
+      "order": 1,
+      "createdAt": "2025-12-07T21:53:46.973Z"
+    },
+    {
+      "_id": "6935f76a1a93e102e204232c",
+      "question": "Is Netrcol free to use?",
+      "answer": "Yes! Netrcol offers a comprehensive free tier with all essential features. Premium features are available for advanced needs.",
+      "order": 2,
+      "createdAt": "2025-12-07T21:53:46.973Z",
+      "updatedAt": "2025-12-07T21:58:14.739Z"
+    },
+    {
+      "_id": "6935f76a1a93e102e204232d",
+      "question": "How does the registration system work?",
+      "answer": "Our registration system allows you to create custom registration forms with verification steps. You can set up roles, channels, and automated welcome messages.",
+      "order": 3,
+      "createdAt": "2025-12-07T21:53:46.973Z"
+    },
+    {
+      "_id": "6935f76a1a93e102e204232e",
+      "question": "What is the jail feature?",
+      "answer": "The jail system allows you to temporarily restrict users access to certain channels while keeping them in the server. Perfect for temporary punishments.",
+      "order": 4,
+      "createdAt": "2025-12-07T21:53:46.973Z"
+    },
+    {
+      "_id": "6935f76a1a93e102e204232f",
+      "question": "How do giveaways work?",
+      "answer": "You can create giveaways with custom duration, winner count, and requirements. The bot automatically selects winners and sends notifications.",
+      "order": 5,
+      "createdAt": "2025-12-07T21:53:46.973Z"
+    },
+    {
+      "_id": "6935f76a1a93e102e2042330",
+      "question": "How can I get support?",
+      "answer": "Join our support server using the \"Support Server\" button. Our team is available 24/7 to help with any issues.",
+      "order": 6,
+      "createdAt": "2025-12-07T21:53:46.973Z"
+    }
+  ],
+  "ticket_categories": [],
+  "registration_settings": [],
+  "welcome_settings": [],
+  "ticket_channels": [],
+  "dashboard_users": [
+    {
+      "_id": "6935eee37ec6606be456d9e4",
+      "discord_id": "760210546980028419",
+      "avatar": "ac1cb997384eebbd1ac13949bd8e3535",
+      "created_at": "2025-12-07T21:17:23.429Z",
+      "discriminator": "0",
+      "email": "ahmtkdgl@gmail.com",
+      "refresh_token": "gLFIOlWVLfnyAGg2BpMsAF2UmsoALM",
+      "updated_at": "2025-12-07T21:56:52.111Z",
+      "username": "netrcol",
+      "is_admin": true
+    }
+  ],
+  "giveaways": [],
+  "dashboard_guild_settings": [],
+  "dashboard_content_commands": [
+    {
+      "_id": "6935f76a1a93e102e2042336",
+      "category": "Moderation",
+      "commands": [
+        {
+          "name": "/ban",
+          "description": "Ban users from the server"
+        },
+        {
+          "name": "/kick",
+          "description": "Remove users from the server"
+        },
+        {
+          "name": "/timeout",
+          "description": "Timeout users temporarily"
+        },
+        {
+          "name": "/warn",
+          "description": "Warn users with reason"
+        },
+        {
+          "name": "/clear",
+          "description": "Clear messages in bulk"
+        },
+        {
+          "name": "/jail",
+          "description": "Send users to jail channel"
+        }
+      ],
+      "icon": "🛡️",
+      "color": "#ef4444",
+      "order": 1,
+      "createdAt": "2025-12-07T21:53:46.987Z"
+    },
+    {
+      "_id": "6935f76a1a93e102e2042337",
+      "category": "Registration",
+      "commands": [
+        {
+          "name": "/regist-setup",
+          "description": "Setup registration system"
+        },
+        {
+          "name": "/regist-settings",
+          "description": "Configure registration"
+        },
+        {
+          "name": "/regist-disable",
+          "description": "Disable registration"
+        }
+      ],
+      "icon": "📝",
+      "color": "#3b82f6",
+      "order": 2,
+      "createdAt": "2025-12-07T21:53:46.987Z"
+    },
+    {
+      "_id": "6935f76a1a93e102e2042338",
+      "category": "Giveaways",
+      "commands": [
+        {
+          "name": "/giveaway",
+          "description": "Create a new giveaway"
+        },
+        {
+          "name": "/giveaway reroll",
+          "description": "Reroll giveaway winners"
+        },
+        {
+          "name": "/giveaway end",
+          "description": "End giveaway early"
+        }
+      ],
+      "icon": "🎉",
+      "color": "#f59e0b",
+      "order": 3,
+      "createdAt": "2025-12-07T21:53:46.987Z"
+    },
+    {
+      "_id": "6935f76a1a93e102e2042339",
+      "category": "Information",
+      "commands": [
+        {
+          "name": "/help",
+          "description": "Show all commands"
+        },
+        {
+          "name": "/botinfo",
+          "description": "Show bot information"
+        },
+        {
+          "name": "/serverinfo",
+          "description": "Show server information"
+        },
+        {
+          "name": "/ping",
+          "description": "Check bot latency"
+        }
+      ],
+      "icon": "ℹ️",
+      "color": "#10b981",
+      "order": 4,
+      "createdAt": "2025-12-07T21:53:46.987Z"
+    }
+  ],
+  "jailed_users": [],
+  "jtc_settings": [],
+  "guild_settings": [],
+  "dashboard_content_features": [
+    {
+      "_id": "6935f76a1a93e102e2042331",
+      "icon": "📝",
+      "title": "Advanced Registration System",
+      "description": "Customizable member registration with verification and role assignment. Includes CAPTCHA, email verification, and automated role management.",
+      "color": "#3b82f6",
+      "gradient": "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
+      "order": 1,
+      "createdAt": "2025-12-07T21:53:46.982Z"
+    },
+    {
+      "_id": "6935f76a1a93e102e2042332",
+      "icon": "🛡️",
+      "title": "Moderation & Jail",
+      "description": "Advanced moderation tools with temporary punishment system. Includes auto-mod, warning system, and customizable jail channels.",
+      "color": "#ef4444",
+      "gradient": "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+      "order": 2,
+      "createdAt": "2025-12-07T21:53:46.982Z"
+    },
+    {
+      "_id": "6935f76a1a93e102e2042333",
+      "icon": "🎉",
+      "title": "Giveaways",
+      "description": "Easy to create and manage giveaways with multiple winners. Includes automatic winner selection and reroll functionality.",
+      "color": "#f59e0b",
+      "gradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+      "order": 3,
+      "createdAt": "2025-12-07T21:53:46.982Z"
+    },
+    {
+      "_id": "6935f76a1a93e102e2042334",
+      "icon": "🔊",
+      "title": "Voice & Welcome",
+      "description": "Voice channel management and customizable welcome messages. Includes temporary voice channels and automated greetings.",
+      "color": "#10b981",
+      "gradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+      "order": 4,
+      "createdAt": "2025-12-07T21:53:46.982Z"
+    },
+    {
+      "_id": "6935f76a1a93e102e2042335",
+      "icon": "📊",
+      "title": "Logging & System",
+      "description": "Comprehensive logging system for all server activities. Track moderation actions, member joins/leaves, and channel changes.",
+      "color": "#8b5cf6",
+      "gradient": "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
+      "order": 5,
+      "createdAt": "2025-12-07T21:53:46.982Z"
+    }
+  ]
+}

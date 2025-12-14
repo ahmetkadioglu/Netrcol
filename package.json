@@ -1,0 +1,71 @@
+{
+  "name": "netrcol-bot",
+  "version": "3.2.0",
+  "description": "Advanced Discord Bot with MongoDB Integration",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "node scripts/real_db_test.js",
+    "deploy": "node scripts/deploy-commands.js",
+    "bundle": "node scripts/bundle.js",
+    "dashboard": "node dashboard/app.js",
+    "dev-dashboard": "nodemon dashboard/app.js",
+    "test-security": "node scripts/test-security.js",
+    "lint": "eslint .",
+    "setup": "npm install && echo '⚠️ Don\\'t forget to create .env file!'",
+    "health": "curl http://localhost:3000/health || echo 'Dashboard not running'",
+    "production": "NODE_ENV=production node index.js",
+    "production-dashboard": "NODE_ENV=production node dashboard/app.js"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.83",
+    "body-parser": "^2.2.1",
+    "compression": "^1.8.1",
+    "connect-flash": "^0.1.1",
+    "connect-mongo": "^5.1.0",
+    "cors": "^2.8.5",
+    "csurf": "^1.11.0",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.10",
+    "express": "^5.2.1",
+    "express-ejs-layouts": "^2.5.1",
+    "express-rate-limit": "^8.2.1",
+    "express-session": "^1.18.2",
+    "express-validator": "^7.3.1",
+    "helmet": "^8.1.0",
+    "mongodb": "^6.3.0",
+    "node-fetch": "^2.7.0",
+    "passport": "^0.7.0",
+    "passport-discord": "^0.1.4",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27.0",
+    "nodemon": "^3.0.2"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "moderation",
+    "tickets",
+    "mongodb",
+    "dashboard",
+    "web-panel"
+  ],
+  "author": "Netrcol",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/netrcol-bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/netrcol-bot/issues"
+  },
+  "homepage": "https://github.com/yourusername/netrcol-bot#readme",
+  "engines": {
+    "node": ">=16.9.0",
+    "npm": ">=7.0.0"
+  }
+}

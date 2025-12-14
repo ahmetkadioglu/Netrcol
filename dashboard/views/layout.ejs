@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | <%= typeof guild !== 'undefined' ? guild.name : client.user.username %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #6366f1; /* Blurple */
+            --accent: #ec4899; /* Neon Pink */
+            --bg: #0f1014; /* Koyu Arkaplan */
+            --sidebar-bg: #1e1f24; /* Sidebar Rengi */
+            --content-bg: #121317; /* İçerik Arkaplanı */
+            --text: #ffffff;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 250px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            height: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+        .guild-header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+        .guild-header img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border: 3px solid var(--primary);
+        }
+        .guild-header h3 {
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        /* Sidebar Nav */
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            text-decoration: none;
+            color: var(--text-muted);
+            border-radius: 8px;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+        .sidebar-nav a i {
+            width: 20px;
+            text-align: center;
+        }
+        .sidebar-nav a:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+        }
+        .sidebar-nav a.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+        
+        .back-link {
+            margin-top: auto;
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            margin-left: 250px; /* Sidebar kadar boşluk bırak */
+            flex-grow: 1;
+            padding: 40px;
+            background: var(--content-bg);
+        }
+        
+        /* Dashboard Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .dashboard-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+        }
+        .user-info img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+        }
+
+        /* --- Content Block (Placeholder) --- */
+        .content-block {
+            padding: 30px;
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        /* --- Layout Footer --- */
+        .layout-footer {
+            margin-top: 40px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="sidebar">
+        <div class="guild-header">
+            <% if (typeof guild !== 'undefined') { %>
+                <img src="<%= guild.iconURL({size: 128}) || client.user.displayAvatarURL() %>" alt="<%= guild.name %> Icon">
+                <h3><%= guild.name %></h3>
+            <% } else { %>
+                <img src="<%= client.user.displayAvatarURL() %>" alt="Bot Icon">
+                <h3>Select a Server</h3>
+            <% } %>
+        </div>
+
+        <% if (typeof guild !== 'undefined') { %>
+            <div class="sidebar-nav">
+                <a href="/dashboard/<%= guild.id %>" class="active"><i class="fa-solid fa-gauge"></i> Overview</a>
+                <a href="/dashboard/<%= guild.id %>/logs"><i class="fa-solid fa-file-lines"></i> Logging</a>
+                <a href="/dashboard/<%= guild.id %>/mod"><i class="fa-solid fa-shield-halved"></i> Moderation</a>
+                <a href="/dashboard/<%= guild.id %>/tickets"><i class="fa-solid fa-ticket"></i> Tickets</a>
+                <a href="/dashboard/<%= guild.id %>/levels"><i class="fa-solid fa-chart-line"></i> Leveling</a>
+                <a href="/dashboard/<%= guild.id %>/eco"><i class="fa-solid fa-coins"></i> Economy</a>
+            </div>
+        <% } %>
+        
+        <a href="/settings" class="back-link"><i class="fa-solid fa-arrow-left"></i> Select Another Server</a>
+    </div>
+
+    <div class="main-content">
+        <div class="dashboard-header">
+            <h1>Dashboard</h1>
+            <div class="user-info">
+                <span><%= discordUser.username %></span>
+                <img src="https://cdn.discordapp.com/avatars/<%= discordUser.id %>/<%= discordUser.avatar %>.png?size=64" alt="User Avatar">
+                <a href="/auth/logout" style="color: var(--accent); margin-left: 10px;">Logout <i class="fa-solid fa-right-from-bracket"></i></a>
+            </div>
+        </div>
+
+        <%- body %> 
+
+        <div class="layout-footer">
+            &copy; 2025 <%= client.user.username %> | Dashboard Version 1.0
+        </div>
+    </div>
+
+</body>
+</html>
