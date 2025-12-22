@@ -14,7 +14,7 @@ module.exports = {
     // ⚠️ KRİTİK AYARLAR - DISCORD OAUTH2 İÇİN GEREKLİ
     clientId: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackUrl: process.env.CALLBACK_URL, // Örn: http://localhost:3000/auth/callback
+    callbackUrl: process.env.CALLBACK_URL,
 
     // 👑 BOT SAHİBİ (Senin ID'n)
     ownerId: process.env.OWNER_ID || '760210546980028419',
@@ -41,10 +41,10 @@ module.exports = {
 
     // 🗄️ MongoDB URI
     mongoUri: (() => {
-        const localUri = process.env.MONGO_URI_LOCAL;
-        if (localUri && localUri.trim() !== "") {
-            console.log("🟢 Mongo URI: LOCAL MODE (localhost)");
-            return localUri;
+        const localUri = process.env.MONGO_URI_LOCAL; // Aktif!
+        if (localUri && localUri.trim() !== "") {     // Aktif!
+            console.log("🟢 Mongo URI: LOCAL MODE (localhost)"); // Aktif!
+            return localUri;                          // Aktif!
         }
         const atlasUri = process.env.MONGO_URI;
         if (!atlasUri || atlasUri.trim() === "") {
@@ -59,19 +59,11 @@ module.exports = {
     sessionSecret: (() => {
         const secret = process.env.SESSION_SECRET;
 
-        if (process.env.NODE_ENV === 'production') {
-            if (!secret || secret.length < 32) {
-                console.error('\n❌❌❌ PRODUCTION HATASI: SESSION_SECRET en az 32 karakter olmalı!');
-                process.exit(1);
-            }
-            return secret;
-        }
-
-        // Development
-        if (!secret) {
-            const devSecret = 'dev-' + crypto.randomBytes(32).toString('hex');
-            console.warn('\n⚠️  UYARI: SESSION_SECRET bulunamadı. Development için otomatik oluşturuldu.');
-            return devSecret;
+        // ✅ FIX: Artık development'ta da random üretme yok.
+        // .env içinde SESSION_SECRET yoksa direkt hata ver (stabil oturum için).
+        if (!secret || secret.length < 32) {
+            console.error('\n❌❌❌ HATA: SESSION_SECRET .env içinde tanımlı olmalı ve en az 32 karakter olmalı!');
+            process.exit(1);
         }
 
         return secret;

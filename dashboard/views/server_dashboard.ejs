@@ -1,24 +1,212 @@
-<% layout('layout') %>
-
-<div class="content-block">
-    <h2>Welcome to <%= guild.name %>'s Control Panel</h2>
-    <p style="color: var(--text-muted); margin-bottom: 20px;">Use the sidebar to configure the bot's features.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, initial-scale=1">
+    <title><%= guild.name %> | Dashboard</title>
     
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px;">
-        <div style="background: var(--content-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
-            <i class="fa-solid fa-users" style="color: var(--primary);"></i>
-            <h4 style="margin-top: 10px;">Members</h4>
-            <p style="font-size: 1.5rem; font-weight: 700;"><%= guild.memberCount %></p>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Renkler daha canlı hale getirildi */
+            --primary: #818cf8; 
+            --secondary: #c084fc; 
+            --bg: #0f1016; /* Arkaplan bir tık açıldı */
+            --surface: #1e1f29; 
+            --text: #ffffff; 
+            --text-muted: #cbd5e1; /* Soluk yazılar parlatıldı */
+            --border: rgba(255, 255, 255, 0.2); /* Kenarlıklar belirginleştirildi */
+            --sidebar-width: 280px;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; display: flex; min-height: 100vh; overflow-x: hidden; min-width: 1200px; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        /* Sidebar - Tamamen Opak */
+        .sidebar { 
+            width: var(--sidebar-width); height: 100vh; position: fixed; top: 0; left: 0; 
+            background: #13141c; /* Şeffaflık kaldırıldı */
+            border-right: 1px solid var(--border); padding: 30px 20px; 
+            display: flex; flex-direction: column; gap: 5px; z-index: 100; overflow-y: auto; 
+        }
+        
+        .server-profile { display: flex; align-items: center; gap: 15px; padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 15px; flex-shrink: 0; }
+        .server-icon { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
+        .server-icon-placeholder { width: 45px; height: 45px; border-radius: 50%; background: var(--surface); display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid var(--primary); }
+        .server-name { font-weight: 700; font-size: 1rem; color: white; }
+        
+        .menu-label { color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin: 20px 10px 10px; font-weight: 800; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 15px; color: #cbd5e1; text-decoration: none; border-radius: 10px; transition: 0.2s; font-weight: 600; font-size: 0.95rem; }
+        .nav-item:hover { background: rgba(255,255,255,0.1); color: white; transform: translateX(5px); }
+        .nav-item.active { background: linear-gradient(90deg, rgba(99, 102, 241, 0.2), transparent); color: var(--primary); border-left: 3px solid var(--primary); }
+        .back-btn { margin-top: auto; background: rgba(255,255,255,0.1); color: white; justify-content: center; margin-bottom: 20px; }
+
+        /* Main Content */
+        .main-content { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); padding: 40px 60px; min-width: 900px; }
+
+        /* Top Bar */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 25px; }
+        .page-info h1 { font-size: 2.5rem; font-weight: 800; color: white; margin-bottom: 5px; }
+        .page-info p { color: var(--text-muted); font-size: 1.1rem; }
+        
+        .user-pill { display: flex; align-items: center; gap: 15px; background: #1e1f29; border: 1px solid var(--border); padding: 10px 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); }
+        .user-name { font-weight: 700; font-size: 1rem; color: white; }
+
+        /* GRID YAPISI */
+        .stats-grid, .quick-actions { 
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; 
+            --c1: #6366f1; --c2: #ec4899; --c3: #10b981; --c4: #f59e0b;
+        }
+
+        /* Renk Atamaları */
+        .stat-card:nth-child(1), .action-btn:nth-child(1) { --theme: var(--c1); }
+        .stat-card:nth-child(2), .action-btn:nth-child(2) { --theme: var(--c2); }
+        .stat-card:nth-child(3), .action-btn:nth-child(3) { --theme: var(--c3); }
+        .stat-card:nth-child(4), .action-btn:nth-child(4) { --theme: var(--c4); }
+
+        /* KART STİLLERİ (DAHA NET) */
+        .stat-card, .action-btn { 
+            position: relative; overflow: hidden;
+            background: #1e1f29; /* Katı renk - Şeffaflık yok */
+            border: 1px solid rgba(255,255,255,0.15);
+            border-top: 3px solid var(--theme); /* Üst çizgi */
+            border-radius: 16px; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none; color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Gölge ile ayır */
+            z-index: 1;
+        }
+
+        .stat-card { height: 160px; padding: 25px; display: flex; flex-direction: column; justify-content: center; }
+        .action-btn { padding: 25px; display: flex; flex-direction: column; gap: 15px; height: 180px; }
+
+        /* Hover Efekti - Parlama */
+        .stat-card:hover, .action-btn:hover { 
+            transform: translateY(-5px); 
+            border-color: var(--theme);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: #252630; /* Hover'da hafif renk değişimi */
+        }
+
+        /* İkonlar ve Metinler */
+        .stat-value { font-size: 3rem; font-weight: 800; color: white; margin-bottom: 5px; z-index: 2; }
+        .stat-label { color: #94a3b8; font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; z-index: 2; }
+        
+        /* Arkaplan İkonu (Büyük) */
+        .stat-icon { position: absolute; right: 20px; bottom: 20px; font-size: 4rem; opacity: 0.1; color: white; transition: 0.3s; z-index: 0; }
+        .stat-card:hover .stat-icon { opacity: 0.3; transform: scale(1.1) rotate(-10deg); color: var(--theme); }
+
+        /* Hızlı İşlem İkonları */
+        .action-icon { 
+            width: 50px; height: 50px; 
+            background: rgba(255,255,255,0.05); 
+            color: var(--theme); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; display: flex; align-items: center; justify-content: center; 
+            font-size: 1.5rem; transition: 0.3s;
+        }
+        .action-btn:hover .action-icon { background: var(--theme); color: white; }
+        .action-content h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 5px; color: white; }
+        .action-content p { font-size: 0.9rem; color: #cbd5e1; }
+
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="server-profile">
+            <% if (guild.icon) { %> <img src="https://cdn.discordapp.com/icons/<%= guild.id %>/<%= guild.icon %>.webp" class="server-icon"> <% } else { %> <div class="server-icon-placeholder"><%= guild.name.charAt(0) %></div> <% } %>
+            <div class="server-name"><%= guild.name %></div>
         </div>
-        <div style="background: var(--content-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
-            <i class="fa-solid fa-check" style="color: var(--success);"></i>
-            <h4 style="margin-top: 10px;">Active Modules</h4>
-            <p style="font-size: 1.5rem; font-weight: 700;">6 / 8</p>
+
+        <span class="menu-label">Management</span>
+        <a href="/dashboard/<%= guild.id %>" class="nav-item active"><i class="fa-solid fa-chart-pie"></i> Overview</a>
+        <a href="/dashboard/<%= guild.id %>/moderation" class="nav-item"><i class="fa-solid fa-shield-halved"></i> Moderation</a>
+        <a href="/dashboard/<%= guild.id %>/levels" class="nav-item"><i class="fa-solid fa-chart-line"></i> Levels</a>
+        <a href="/dashboard/<%= guild.id %>/giveaway" class="nav-item"><i class="fa-solid fa-gift"></i> Giveaways</a>
+        <a href="/dashboard/<%= guild.id %>/suggestion" class="nav-item"><i class="fa-solid fa-lightbulb"></i> Suggestions</a>
+        <a href="/dashboard/<%= guild.id %>/welcome" class="nav-item"><i class="fa-solid fa-door-open"></i> Welcome</a>
+
+        <span class="menu-label">System</span>
+        <a href="/dashboard/<%= guild.id %>/tickets" class="nav-item"><i class="fa-solid fa-ticket"></i> Ticket System</a>
+        <a href="/dashboard/<%= guild.id %>/registration" class="nav-item"><i class="fa-solid fa-id-card"></i> Regist System</a>
+        <a href="/dashboard/<%= guild.id %>/logging" class="nav-item"><i class="fa-solid fa-file-lines"></i> Logging</a>
+        <a href="/dashboard/<%= guild.id %>/invites" class="nav-item"><i class="fa-solid fa-user-plus"></i> Invite Tracker</a>
+        <a href="/dashboard/<%= guild.id %>/jtc" class="nav-item"><i class="fa-solid fa-microphone"></i> JTC System</a>
+        <a href="/dashboard/<%= guild.id %>/social_notify" class="nav-item"><i class="fa-solid fa-share-nodes"></i> Social Notify</a>
+
+        <span class="menu-label" style="color: var(--accent);">Entertainment</span>
+        <a href="/dashboard/<%= guild.id %>/wordgame" class="nav-item"><i class="fa-solid fa-font"></i> Word Game</a>
+        <a href="/dashboard/<%= guild.id %>/counting" class="nav-item"><i class="fa-solid fa-list-ol"></i> Counting Game</a>
+        <a href="/dashboard/<%= guild.id %>/economy" class="nav-item"><i class="fa-solid fa-coins"></i> Economy</a>
+
+        <a href="/settings" class="nav-item back-btn"><i class="fa-solid fa-arrow-left"></i> Change Server</a>
+    </aside>
+
+    <main class="main-content">
+        <div class="top-bar">
+            <div class="page-info">
+                <h1>Overview</h1>
+                <p>Analytics for <b><%= guild.name %></b>.</p>
+            </div>
+            <div class="user-pill">
+                <img src="https://cdn.discordapp.com/avatars/<%= discordUser.id %>/<%= discordUser.avatar %>.png" class="user-avatar">
+                <div class="user-name"><%= discordUser.username %></div>
+            </div>
         </div>
-        <div style="background: var(--content-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
-            <i class="fa-solid fa-file-lines" style="color: var(--accent);"></i>
-            <h4 style="margin-top: 10px;">Total Logs</h4>
-            <p style="font-size: 1.5rem; font-weight: 700;">~5000</p>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value"><%= guild.memberCount %></div>
+                <div class="stat-label">Total Members</div>
+                <i class="fa-solid fa-users stat-icon"></i>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value"><%= guild.channels.cache.size %></div>
+                <div class="stat-label">Total Channels</div>
+                <i class="fa-solid fa-hashtag stat-icon"></i>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value"><%= guild.roles.cache.size %></div>
+                <div class="stat-label">Server Roles</div>
+                <i class="fa-solid fa-shield-halved stat-icon"></i>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value"><%= guild.channels.cache.filter(c => c.type === 2).reduce((a, c) => a + c.members.size, 0) %></div>
+                <div class="stat-label">Voice Online</div>
+                <i class="fa-solid fa-microphone stat-icon"></i>
+            </div>
         </div>
-    </div>
-</div>
+
+        <h3 style="margin-bottom: 25px; font-weight: 800; color: white;">Quick Actions</h3>
+        
+        <div class="quick-actions">
+            <a href="/dashboard/<%= guild.id %>/logging" class="action-btn">
+                <div class="action-icon"><i class="fa-solid fa-file-lines"></i></div>
+                <div class="action-content"><h3>Audit Logs</h3><p>Track server events.</p></div>
+            </a>
+            <a href="/dashboard/<%= guild.id %>/moderation" class="action-btn">
+                <div class="action-icon"><i class="fa-solid fa-gavel"></i></div>
+                <div class="action-content"><h3>Moderation</h3><p>Manage punishments.</p></div>
+            </a>
+            <a href="/dashboard/<%= guild.id %>/social_notify" class="action-btn">
+                <div class="action-icon"><i class="fa-solid fa-share-nodes"></i></div>
+                <div class="action-content"><h3>Social Notify</h3><p>YouTube & Twitch alerts.</p></div>
+            </a>
+            <a href="/dashboard/<%= guild.id %>/tickets" class="action-btn">
+                <div class="action-icon"><i class="fa-solid fa-ticket"></i></div>
+                <div class="action-content"><h3>Ticket System</h3><p>Setup support panels.</p></div>
+            </a>
+        </div>
+    </main>
+
+</body>
+</html>

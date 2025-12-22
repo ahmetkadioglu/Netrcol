@@ -1,10 +1,18 @@
-// index.js - MASTER FILE (BOT + DASHBOARD + EVENTS)
+// index.js - MASTER FILE (BOT + DASHBOARD + EVENTS + SOCIAL MANAGER)
 require('dotenv').config();
-const { Client, GatewayIntentBits, Collection, Partials } = require('discord.js');
+
+const mongoose = require('mongoose'); // ✅ [YENİ] Mongoose bağlantısı için
+
+// EmbedBuilder'ı ekledik (Log mesajı için lazım)
+const { Client, GatewayIntentBits, Collection, Partials, EmbedBuilder } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 const db = require('./utils/database');
 const config = require('./config/config');
+const { AutoPoster } = require('topgg-autoposter');
+
+// [YENİ] Sosyal Medya Yöneticisi
+const SocialManager = require('./utils/SocialManager');
 
 console.log('='.repeat(60));
 console.log('🚀 NETRCOL BOT BAŞLATILIYOR');
@@ -16,13 +24,32 @@ if (!process.env.TOKEN) {
     process.exit(1);
 }
 
+// ✅ [YENİ] Mongoose bağlantısı (Dashboard modelleri: SocialNotify / GuildSettings vb.)
+async function connectMongoose() {
+    const mongoUri = process.env.MONGO_URI_LOCAL || process.env.MONGO_URI;
+
+    if (!mongoUri) {
+        console.error('❌ KRİTİK HATA: MONGO_URI_LOCAL veya MONGO_URI bulunamadı!');
+        process.exit(1);
+    }
+
+    try {
+        await mongoose.connect(mongoUri, {
+            serverSelectionTimeoutMS: 10000,
+        });
+        console.log('✅ Mongoose connected');
+    } catch (err) {
+        console.error('❌ Mongoose connection error:', err);
+    }
+}
+
 // 2. Bot İstemcisi (Client) Oluşturma
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent, 
-        GatewayIntentBits.GuildMembers, 
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildModeration,
         GatewayIntentBits.GuildVoiceStates,
         GatewayIntentBits.GuildPresences,
@@ -38,7 +65,7 @@ const client = new Client({
     ]
 });
 
-// Event Listener Sınırını Artır (Çok fazla event olduğu için)
+// Event Listener Sınırını Artır
 client.setMaxListeners(50);
 
 // Global Değişkenler
@@ -46,23 +73,55 @@ global.client = client;
 client.commands = new Collection();
 
 // ====================================================
-// ⚠️ KRİTİK GLOBAL HATA YAKALAMA (ÇÖKMEYİ ENGELLER)
+// 📈 TOP.GG AUTO POSTER (AUTO STATS & LOG)
+// ====================================================
+// Paste your Top.gg token here.
+const TOPGG_TOKEN = process.env.TOPGG_TOKEN || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdCI6Ijc5MDkzMjE1MjU4NTcxOTgwOCIsImlkIjoiNzg4Nzg0Nzg0NTYyMTE4NjU2IiwiaWF0IjoxNzY2NDA5NzE5fQ.MT2_EvDeILTJi-APYckokNM6_khuzy5_YFl6LddViuU';
+
+// FIX: Just check if the token exists.
+if (TOPGG_TOKEN) {
+    const ap = AutoPoster(TOPGG_TOKEN, client);
+
+    ap.on('posted', () => {
+        console.log('✅ Stats successfully posted to Top.gg!');
+        
+        // DEV LOG CHANNEL
+        const devLogChannelId = '1448451762729128048';
+        const channel = client.channels.cache.get(devLogChannelId);
+        
+        if (channel) {
+            const embed = new EmbedBuilder()
+                .setTitle('📈 Top.gg Stats Posted')
+                .setDescription(`**Server Count:** \`${client.guilds.cache.size}\`\n**Shard Count:** \`${client.options.shardCount || 1}\`\n\nData successfully transmitted to Top.gg API.`)
+                .setColor('#FF3366') // Top.gg color
+                .setTimestamp()
+                .setFooter({ text: 'Netrcol AutoPoster', iconURL: 'https://top.gg/images/dblnew.png' });
+            
+            channel.send({ embeds: [embed] }).catch(e => console.error('Failed to send dev log:', e));
+        }
+    });
+
+    ap.on('error', (err) => {
+        console.error('❌ Top.gg AutoPoster Error:', err.message || err);
+    });
+} else {
+    console.warn('⚠️ WARNING: Top.gg Token missing, AutoPoster not started.');
+}
+
+// ====================================================
+// ⚠️ KRİTİK GLOBAL HATA YAKALAMA
 // ====================================================
 process.on('unhandledRejection', (reason, promise) => {
-    // Söz verilen bir işlemin reddedilmesi (Discord API hataları buraya düşer)
     console.error('❌ Unhandled Rejection/Promise Error:', reason);
 });
 
 process.on('uncaughtException', (err, origin) => {
-    // Senkron hataları (daha nadir)
     console.error('❌ Uncaught Exception:', err);
 });
 
 client.on('error', (err) => {
     console.error('❌ Discord Client Error:', err);
 });
-// ====================================================
-
 
 // ====================================================
 // 3. KOMUTLARI YÜKLE (COMMAND LOADER)
@@ -78,12 +137,12 @@ if (fs.existsSync(commandsPath)) {
             const command = require(path.join(commandsPath, file));
             if (command.data && command.execute) {
                 client.commands.set(command.data.name, command);
-                console.log(`   ✅ ${command.data.name}`);
+                console.log(`   ✅ ${command.data.name}`);
             }
-        } catch (e) { console.error(`   ❌ Hata (${file}): ${e.message}`); }
+        } catch (e) { console.error(`   ❌ Hata (${file}): ${e.message}`); }
     }
 
-    // B) Alt klasörlerdeki komutlar (economy, moderation vb.)
+    // B) Alt klasörlerdeki komutlar
     const folders = fs.readdirSync(commandsPath).filter(f => fs.statSync(path.join(commandsPath, f)).isDirectory());
     for (const folder of folders) {
         const files = fs.readdirSync(path.join(commandsPath, folder)).filter(f => f.endsWith('.js'));
@@ -92,9 +151,9 @@ if (fs.existsSync(commandsPath)) {
                 const command = require(path.join(commandsPath, folder, file));
                 if (command.data && command.execute) {
                     client.commands.set(command.data.name, command);
-                    console.log(`   ✅ ${command.data.name} (${folder})`);
+                    console.log(`   ✅ ${command.data.name} (${folder})`);
                 }
-            } catch (e) { console.error(`   ❌ Hata (${folder}/${file}): ${e.message}`); }
+            } catch (e) { console.error(`   ❌ Hata (${folder}/${file}): ${e.message}`); }
         }
     }
 } else {
@@ -114,50 +173,49 @@ if (fs.existsSync(eventsPath)) {
         try {
             const eventModule = require(path.join(eventsPath, file));
 
-            // TİP A: Özel İsimlendirilmiş Dosyalar (serverLogs.js vb.)
+            // Özel Başlatıcılar
+            if (eventModule.name === 'inviteTracker') {
+                eventModule.execute(client);
+                console.log(`   ✅ Invite Tracker Başlatıldı`);
+                continue;
+            }
+
             if (file === 'serverLogs.js') {
                 if (eventModule.onMessageDelete) client.on('messageDelete', (...args) => eventModule.onMessageDelete(...args));
                 if (eventModule.onMessageUpdate) client.on('messageUpdate', (...args) => eventModule.onMessageUpdate(...args));
                 if (eventModule.onMemberUpdate) client.on('guildMemberUpdate', (...args) => eventModule.onMemberUpdate(...args));
-                console.log(`   ✅ Server Logs Loaded (Legacy Mode)`);
+                console.log(`   ✅ Server Logs Loaded (Legacy Mode)`);
                 continue;
             }
 
-            // TİP B: Standart Tekil Event (module.exports = { name: '...', execute: ... })
+            // Standart Eventler
             if (eventModule.name && typeof eventModule.name === 'string') {
-
-            // interactionCreate event'i artık sadece *tek* dosyadan yönetiliyor: interactionCreate.js
-            // Diğer interactionCreate dosyalarını client'a event olarak bağlamıyoruz.
                 if (eventModule.name === 'interactionCreate' && file !== 'interactionCreate.js') {
-                console.log(`   ⚠ interactionCreate atlandı (${file}) - merkez handler üzerinden yönetiliyor.`);
-                continue;
-    }
+                    console.log(`   ⚠ interactionCreate atlandı (${file}) - merkez handler devrede.`);
+                    continue;
+                }
 
-    if (eventModule.once) {
-        client.once(eventModule.name, (...args) => eventModule.execute(...args, client));
-    } else {
-        client.on(eventModule.name, (...args) => eventModule.execute(...args, client));
-    }
-    console.log(`   ✅ ${eventModule.name} (${file})`);
-}
-            
-            // TİP C: Çoklu Obje Event (advancedLogger.js gibi)
+                if (eventModule.once) {
+                    client.once(eventModule.name, (...args) => eventModule.execute(...args, client));
+                } else {
+                    client.on(eventModule.name, (...args) => eventModule.execute(...args, client));
+                }
+                console.log(`   ✅ ${eventModule.name} (${file})`);
+            }
+            // Çoklu Obje Eventler
             else {
                 let count = 0;
                 for (const key in eventModule) {
                     const evt = eventModule[key];
-                    // Sadece geçerli event objelerini al (name ve execute olanlar)
                     if (evt && evt.name && typeof evt.execute === 'function') {
                         client.on(evt.name, (...args) => evt.execute(...args, client));
                         count++;
                     }
                 }
-                if (count > 0) {
-                    console.log(`   ✅ ${count} Event Yüklendi (${file} - Grup)`);
-                }
+                if (count > 0) console.log(`   ✅ ${count} Event Yüklendi (${file} - Grup)`);
             }
         } catch (e) {
-            console.error(`   ❌ Hata (${file}): ${e.message}`);
+            console.error(`   ❌ Hata (${file}): ${e.message}`);
         }
     }
 } else {
@@ -165,25 +223,37 @@ if (fs.existsSync(eventsPath)) {
 }
 
 // ====================================================
-// 5. BAŞLATMA FONKSİYONU (DB -> BOT -> DASHBOARD)
+// 5. BAŞLATMA FONKSİYONU (DB -> BOT -> SOCIAL -> DASHBOARD)
 // ====================================================
 async function start() {
     try {
-        // 1. Veritabanı Bağlantısı
-        console.log(`🔗 Database bağlanıyor (${config.mongoUri.includes('localhost') ? 'LOCAL' : 'ATLAS'})...`);
+        // ✅ [YENİ] Önce Mongoose bağlan (dashboard modelleri hata vermesin)
+        await connectMongoose();
+
+        // 1. Veritabanı Bağlantısı (MongoClient / Native driver)
+        console.log(`🔗 Database bağlanıyor (${config.mongoUri.includes('localhost') || config.mongoUri.includes('127.0.0.1') ? 'LOCAL' : 'ATLAS'})...`);
         await db.connect();
-        
+
         // 2. Botu Başlat
         console.log('🤖 Bot Discord\'a giriş yapıyor...');
         await client.login(config.token);
 
-        // 3. Web Panelini (Dashboard) Başlat
+        // 3. [YENİ] Sosyal Medya Bildirimcisini Başlat
+        // Bot hazır olduktan sonra (login sonrası) başlatıyoruz.
+        try {
+            const socialManager = new SocialManager(client);
+            socialManager.init();
+            console.log('📡 Social Media Manager aktif ve dinleniyor...');
+        } catch (socialError) {
+            console.error('❌ Social Media Manager başlatılamadı:', socialError);
+        }
+
+        // 4. Web Panelini (Dashboard) Başlat
         const dashboardPath = path.join(__dirname, 'dashboard', 'server.js');
-        
+
         if (fs.existsSync(dashboardPath)) {
             console.log('🌐 Dashboard başlatılıyor...');
             try {
-                // Dashboard'a bot istemcisini (client) gönderiyoruz
                 require(dashboardPath)(client);
             } catch (e) {
                 console.error('❌ Dashboard Başlatma Hatası:', e);

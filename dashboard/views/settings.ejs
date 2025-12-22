@@ -2,550 +2,190 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dashboard | Select Server</title>
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* Ana Sayfadan Kopyalanan Temel Değişkenler */
         :root {
-            --primary: #6366f1;
-            --secondary: #a855f7;
-            --accent: #ec4899;
-            --success: #10b981;
-            --bg: #030014;
-            --surface: #1e1f24;
-            --text: #ffffff;
-            --text-muted: #94a3b8;
+            --primary: #6366f1; --secondary: #a855f7; --accent: #ec4899; --success: #10b981;
+            --bg: #030014; --surface: #1e1f24; --text: #ffffff; --text-muted: #94a3b8;
             --border: rgba(255, 255, 255, 0.1);
-            --card-bg: rgba(255, 255, 255, 0.03);
         }
         
-        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-        
-        html, body { 
-            width: 100%; 
-            height: 100%; 
-            overflow-x: hidden; 
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Outfit', sans-serif;
-            display: flex; 
-            flex-direction: column; 
-            min-height: 100vh; 
-            position: relative;
-            overflow-x: hidden;
+            background-color: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif;
+            display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden;
+            opacity: 0; animation: pageFadeIn 0.5s ease forwards; /* Sayfa tamamen yüklenince görünür */
         }
 
-        /* --- BACKGROUND FX (Index'ten Aynen) --- */
-        #particles { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            z-index: -1; 
-            pointer-events: none; 
-        }
-        .blob { 
-            position: fixed; 
-            width: 600px; 
-            height: 600px; 
-            border-radius: 50%; 
-            filter: blur(120px); 
-            opacity: 0.3; 
-            z-index: -2; 
-            pointer-events: none; 
-        }
-        .blob-1 { 
-            top: -200px; 
-            left: -200px; 
-            background: var(--primary); 
-            animation: floatBlob 15s infinite alternate; 
-        }
-        .blob-2 { 
-            bottom: -200px; 
-            right: -200px; 
-            background: var(--secondary); 
-            animation: floatBlob 20s infinite alternate-reverse; 
-        }
-        .blob-3 { 
-            top: 40%; 
-            left: 40%; 
-            width: 400px; 
-            height: 400px; 
-            background: var(--accent); 
-            opacity: 0.15; 
-            animation: pulse 10s infinite; 
-        }
+        @keyframes pageFadeIn { to { opacity: 1; } }
 
-        /* --- NAVBAR (Index'ten Adapte) --- */
+        /* --- BACKGROUND FX --- */
+        #particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        .blob { position: fixed; width: 600px; height: 600px; border-radius: 50%; filter: blur(120px); opacity: 0.3; z-index: -2; pointer-events: none; }
+        .blob-1 { top: -200px; left: -200px; background: var(--primary); animation: floatBlob 15s infinite alternate; }
+        .blob-2 { bottom: -200px; right: -200px; background: var(--secondary); animation: floatBlob 20s infinite alternate-reverse; }
+
+        /* --- NAVBAR --- */
         .dashboard-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 5%;
-            width: 100%;
-            backdrop-filter: blur(20px);
-            background: rgba(3, 0, 20, 0.6);
-            border-bottom: 1px solid var(--border);
-            position: relative;
-            z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center; padding: 15px 5%;
+            width: 100%; backdrop-filter: blur(20px); background: rgba(3, 0, 20, 0.8);
+            border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000;
         }
+        .dashboard-logo { font-size: 1.4rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .dashboard-logo img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--primary); }
         
-        .dashboard-logo { 
-            font-size: 1.8rem; 
-            font-weight: 800; 
-            color: #fff; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            text-decoration: none; 
+        .nav-right { display: flex; align-items: center; gap: 15px; }
+        .nav-user-profile {
+            display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.05);
+            padding: 5px 12px 5px 5px; border-radius: 50px; border: 1px solid var(--border);
         }
-        .dashboard-logo img { 
-            width: 50px; 
-            height: 50px; 
-            border-radius: 50%; 
-            border: 2px solid var(--primary); 
-            box-shadow: 0 0 15px var(--primary); 
-        }
-        
+        .nav-user-profile img { width: 28px; height: 28px; border-radius: 50%; }
+        .nav-user-profile span { font-weight: 600; font-size: 0.9rem; padding-right: 5px; }
+
         .nav-back-btn {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text);
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .nav-back-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.05); color: var(--text-muted); text-decoration: none;
+            padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 5px;
         }
 
-        /* --- HEADER & WELCOME --- */
+        /* --- HEADER (DÜZELTİLDİ) --- */
         header {
-            max-width: 1200px;
-            margin: 40px auto 60px;
-            padding: 40px 30px;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            border: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            width: 90%; max-width: 1200px; margin: 40px auto; padding: 50px;
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px);
+            border-radius: 24px; border: 1px solid var(--border);
+            position: relative; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            animation: fadeInDown 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
+            animation: fadeInDown 0.8s ease;
         }
         
-        header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-        }
+        header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--primary), var(--secondary)); }
         
+        .welcome-info { position: relative; z-index: 2; width: 100%; }
         .welcome-info h1 {
-            font-size: 2.8rem; 
-            font-weight: 900;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, #ffffff, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 3rem; font-weight: 900; margin-bottom: 10px;
+            background: linear-gradient(to right, #ffffff, var(--primary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.2;
         }
-        .welcome-info p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            max-width: 600px;
-        }
+        .welcome-info p { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto; line-height: 1.6; }
         
-        .logout-btn {
-            background: linear-gradient(135deg, var(--accent), #d946ef);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+        /* Buton Masaüstünde Sağda Sabit, Mobilde Altta */
+        .home-action-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;
+            padding: 12px 25px; border-radius: 12px; text-decoration: none; font-weight: 700;
+            display: inline-flex; align-items: center; gap: 8px; font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3); transition: 0.3s; z-index: 5;
+            margin-top: 20px; /* Mobilde boşluk */
         }
-        .logout-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 25px rgba(236, 72, 153, 0.5);
+        .home-action-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5); }
+
+        /* Masaüstü Düzeni (Butonu sağa alır) */
+        @media (min-width: 992px) {
+            header { flex-direction: row; justify-content: center; padding: 60px; }
+            .home-action-btn { position: absolute; right: 50px; margin-top: 0; top: 50%; transform: translateY(-50%); }
+            .home-action-btn:hover { transform: translateY(calc(-50% - 3px)); }
         }
 
-        /* --- Server Grid --- */
+        /* --- SERVER GRID --- */
         .server-grid {
-            max-width: 1200px;
-            margin: 0 auto 50px;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
+            width: 90%; max-width: 1300px; margin: 0 auto 50px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px;
         }
         
         .server-card {
             background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
-            border: 1px solid var(--border);
-            padding: 25px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
+            border: 1px solid var(--border); padding: 25px; border-radius: 20px;
+            display: flex; align-items: center; gap: 20px;
             transition: 0.4s cubic-bezier(0.215, 0.610, 0.355, 1);
-            position: relative;
-            overflow: hidden;
-            height: 100%;
-            backdrop-filter: blur(10px);
-        }
-        
-        /* Glow Border Effect */
-        .server-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 20px;
-            padding: 2px;
-            background: linear-gradient(45deg, transparent, var(--primary), transparent);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0;
-            transition: 0.4s;
-        }
-        
-        .server-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255,255,255,0.05);
-            border-color: var(--primary);
-            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.25);
-        }
-        
-        .server-card:hover::after {
-            opacity: 1;
-        }
-        
-        .server-icon {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background-color: var(--surface);
-            border: 3px solid var(--primary);
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
-            overflow: hidden;
-            flex-shrink: 0;
-            position: relative;
-        }
-        
-        .server-card:hover .server-icon {
-            border-color: var(--accent);
-            box-shadow: 0 0 25px var(--accent);
-            transform: rotate(5deg);
-            transition: 0.3s;
-        }
-        
-        .server-icon img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        
-        .server-icon-placeholder {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-        }
-        
-        .server-info {
-            flex-grow: 1;
-        }
-        .server-info h3 {
-            margin: 0 0 8px 0;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: white;
-        }
-        .server-info p {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-        }
-        
-        /* Status Indicator */
-        .server-status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 5px;
-            font-size: 0.85rem;
-        }
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-        .status-dot.online {
-            background: var(--success);
-            box-shadow: 0 0 10px var(--success);
-        }
-        .status-dot.offline {
-            background: #ef4444;
-            box-shadow: 0 0 10px #ef4444;
+            position: relative; overflow: hidden; backdrop-filter: blur(10px);
         }
 
-        /* --- Buttons --- */
-        .manage-btn {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 12px 24px;
-            border-radius: 10px;
-            text-decoration: none;
-            transition: 0.3s;
-            white-space: nowrap;
-            font-weight: 600;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .manage-btn.invite {
-            background: linear-gradient(135deg, var(--success), #22c55e);
-            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
-        }
-        .manage-btn:hover {
-            transform: translateY(-3px);
-            filter: brightness(1.2);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+        /* İçeriklerin üstte kalması için */
+        .content-wrapper { display: flex; align-items: center; gap: 15px; flex-grow: 1; position: relative; z-index: 2; }
+
+        /* Parlama Efekti (Z-Index Düzeltildi) */
+        .server-card::after {
+            content: ''; position: absolute; inset: 0; border-radius: 20px; padding: 2px;
+            background: linear-gradient(45deg, transparent, var(--primary), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: 0.4s;
+            z-index: 1; pointer-events: none;
         }
         
-        .manage-btn.invite:hover {
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6);
+        .server-card:hover { transform: translateY(-7px); background: rgba(255,255,255,0.05); border-color: var(--primary); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .server-card:hover::after { opacity: 1; }
+        
+        .server-icon {
+            width: 65px; height: 65px; border-radius: 50%; background-color: var(--surface);
+            border: 3px solid var(--primary); box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+            overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
         }
+        .server-icon img { width: 100%; height: 100%; object-fit: cover; }
+        .server-icon-placeholder { font-size: 1.8rem; color: white; font-weight: bold; }
+        
+        .server-info h3 { margin: 0 0 5px 0; font-size: 1.25rem; font-weight: 700; color: white; }
+        .server-status { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .status-dot.online { background: var(--success); box-shadow: 0 0 8px var(--success); }
+        .status-dot.offline { background: #ef4444; }
+
+        /* Butonlar (Z-Index Düzeltildi - Tıklanabilir) */
+        .manage-btn {
+            position: relative; z-index: 10;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; padding: 10px 24px; border-radius: 10px; text-decoration: none; transition: 0.3s;
+            white-space: nowrap; font-weight: 600; border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3); display: flex; align-items: center; gap: 8px; font-size: 0.95rem;
+        }
+        .manage-btn.invite { background: linear-gradient(135deg, var(--success), #22c55e); box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4); }
+        .manage-btn:hover { filter: brightness(1.15); box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5); transform: translateY(-2px); }
+        .manage-btn:active { transform: translateY(0); }
 
         /* --- Message Box --- */
         .message-box {
-            grid-column: 1 / -1;
-            padding: 50px 40px;
-            border-radius: 20px;
-            text-align: center;
-            border: 2px dashed var(--accent);
-            color: var(--text-muted);
-            background: rgba(236, 72, 153, 0.05);
-            backdrop-filter: blur(10px);
-            animation: fadeIn 1s ease-out;
+            grid-column: 1 / -1; padding: 50px; border-radius: 20px; text-align: center;
+            border: 2px dashed var(--accent); color: var(--text-muted); background: rgba(236, 72, 153, 0.05);
         }
-        .message-box h2 {
-            font-size: 2rem;
-            color: var(--accent);
-            margin-bottom: 15px;
-        }
-        .message-box p {
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-        }
-        
         .invite-link {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 12px 30px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-        .invite-link:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+            display: inline-block; margin-top: 20px; padding: 12px 30px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;
+            text-decoration: none; border-radius: 10px; font-weight: 600;
         }
 
-        /* --- Footer (Index'ten Adapte) --- */
-        footer {
-            background: #02000d;
-            border-top: 1px solid var(--border);
-            padding: 50px 5% 20px;
-            margin-top: auto;
-        }
-        
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-        
-        .footer-brand p {
-            color: var(--text-muted);
-            margin-top: 15px;
-            line-height: 1.7;
-        }
-        
-        .footer-col h4 {
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .footer-col ul {
-            list-style: none;
-        }
-        
-        .footer-col ul li {
-            margin-bottom: 12px;
-        }
-        
-        .footer-col ul li a {
-            color: var(--text-muted);
-            text-decoration: none;
-            transition: 0.3s;
-        }
-        
-        .footer-col ul li a:hover {
-            color: var(--primary);
-        }
-        
-        .copyright {
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 20px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
+        /* --- Footer --- */
+        footer { background: #02000d; border-top: 1px solid var(--border); padding: 50px 5% 30px; margin-top: auto; }
+        .footer-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
+        .footer-col h4 { font-size: 1rem; margin-bottom: 20px; color: white; text-transform: uppercase; letter-spacing: 1px; }
+        .footer-col ul { list-style: none; } .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { color: var(--text-muted); text-decoration: none; transition: 0.3s; }
+        .footer-col ul li a:hover { color: var(--primary); }
+        .copyright { text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 30px; margin-top: 40px; color: var(--text-muted); font-size: 0.9rem; }
 
-        /* --- Animation Keyframes --- */
-        @keyframes floatBlob { 
-            0% { transform: translate(0, 0); } 
-            100% { transform: translate(50px, 50px); } 
-        }
-        
-        @keyframes fadeInDown { 
-            from { opacity: 0; transform: translateY(-20px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-        
-        @keyframes pulse { 
-            0% { opacity: 0.1; transform: scale(1); } 
-            50% { opacity: 0.2; transform: scale(1.1); } 
-            100% { opacity: 0.1; transform: scale(1); } 
-        }
-        
-        @keyframes fadeIn { 
-            from { opacity: 0; } 
-            to { opacity: 1; } 
-        }
-        
-        @keyframes iconPulse { 
-            0% { box-shadow: 0 0 10px var(--primary), 0 0 0 0 rgba(99, 102, 241, 0.7); }
-            50% { box-shadow: 0 0 20px var(--primary), 0 0 0 5px rgba(99, 102, 241, 0); }
-            100% { box-shadow: 0 0 10px var(--primary), 0 0 0 0 rgba(99, 102, 241, 0.7); }
-        }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes floatBlob { 0% { transform: translate(0, 0); } 100% { transform: translate(50px, 50px); } }
 
-        /* --- Scrollbar Styling --- */
-        ::-webkit-scrollbar {
-            width: 8px;
-            background-color: var(--bg);
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background-color: var(--primary);
-            border-radius: 10px;
-            border: 2px solid var(--bg);
-        }
-        
-        ::-webkit-scrollbar-track {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
-        /* --- Responsive --- */
-        @media (max-width: 992px) {
-            .footer-content {
-                grid-template-columns: 1fr 1fr;
-            }
+        /* --- MOBILE RESPONSIVE --- */
+        @media (max-width: 768px) { 
+            .dashboard-nav { padding: 15px 20px; }
+            .nav-user-profile span { display: none; }
             
-            .welcome-info h1 {
-                font-size: 2.2rem;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                text-align: center;
-                gap: 20px;
-            }
+            header { width: 100%; border-radius: 0; border-left: none; border-right: none; margin: 0 0 30px 0; padding: 40px 20px; }
+            .welcome-info h1 { font-size: 2.2rem; }
             
-            .welcome-info {
-                text-align: center;
-            }
+            .server-grid { width: 100%; padding: 0 15px; grid-template-columns: 1fr; }
+            .server-card { padding: 20px; flex-direction: column; text-align: center; gap: 20px; }
+            .content-wrapper { flex-direction: column; width: 100%; justify-content: center; }
+            .server-status { justify-content: center; }
             
-            .server-card {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .server-info {
-                text-align: center;
-            }
-            
-            .manage-btn {
-                width: 100%;
-                justify-content: center;
-                margin-top: 15px;
-            }
-            
-            .footer-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .server-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .welcome-info h1 {
-                font-size: 1.8rem;
-            }
-            
-            .dashboard-logo {
-                font-size: 1.4rem;
-            }
-            
-            .dashboard-logo img {
-                width: 40px;
-                height: 40px;
-            }
+            .manage-btn { width: 100%; justify-content: center; padding: 12px; }
+            .footer-content { text-align: center; }
         }
     </style>
 </head>
@@ -554,29 +194,29 @@
     <canvas id="particles"></canvas>
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
 
-    <!-- Navigation Bar -->
     <nav class="dashboard-nav">
         <a href="/" class="dashboard-logo">
             <img src="<%= client.user.displayAvatarURL() %>" alt="Bot Logo">
             <%= client.user.username %>
         </a>
         
-        <a href="/" class="nav-back-btn">
-            <i class="fa-solid fa-arrow-left"></i> Back to Home
-        </a>
+        <div class="nav-right">
+            <div class="nav-user-profile">
+                <img src="https://cdn.discordapp.com/avatars/<%= discordUser.id %>/<%= discordUser.avatar %>.png?size=64" alt="User">
+                <span><%= discordUser.username %></span>
+            </div>
+            <a href="/" class="nav-back-btn"><i class="fa-solid fa-house"></i></a>
+        </div>
     </nav>
 
-    <!-- Main Content -->
     <header>
         <div class="welcome-info">
-            <h1>Select Your Server</h1>
-            <p>Welcome, <strong><%= discordUser.username %>#<%= discordUser.discriminator %></strong>. 
-               Please choose a server you administrate to configure <strong><%= client.user.username %></strong>.</p>
+            <h1>Select Server</h1>
+            <p>Welcome, <strong><%= discordUser.username %></strong>. Please choose a server.</p>
         </div>
-        <a href="/auth/logout" class="logout-btn">
-            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        <a href="/" class="home-action-btn">
+            Back to Home <i class="fa-solid fa-house"></i>
         </a>
     </header>
 
@@ -584,33 +224,30 @@
         <% if (manageableGuilds.length === 0) { %>
             <div class="message-box">
                 <h2>No Manageable Servers Found</h2>
-                <p>You must be an Administrator (or have Manage Server permission) in a server where 
-                   <strong><%= client.user.username %></strong> is present.</p>
-                <p>If you are an admin, please invite the bot to your server first!</p>
+                <p>You must be an Administrator in a server.</p>
                 <a href="<%= client.invite %>" target="_blank" class="invite-link">
-                    <i class="fa-solid fa-robot"></i> Invite Bot to Your Server
+                    <i class="fa-solid fa-robot"></i> Invite Bot
                 </a>
             </div>
         <% } %>
 
         <% manageableGuilds.forEach(guild => { %>
             <div class="server-card">
-                <div class="server-icon">
-                    <% if (guild.icon) { %>
-                        <img src="https://cdn.discordapp.com/icons/<%= guild.id %>/<%= guild.icon %>.webp?size=256" 
-                             alt="<%= guild.name %> Icon" loading="lazy">
-                    <% } else { %>
-                        <div class="server-icon-placeholder">
-                            <%= guild.name.charAt(0).toUpperCase() %>
+                <div class="content-wrapper">
+                    <div class="server-icon">
+                        <% if (guild.icon) { %>
+                            <img src="https://cdn.discordapp.com/icons/<%= guild.id %>/<%= guild.icon %>.webp?size=256" alt="Icon" loading="lazy">
+                        <% } else { %>
+                            <div class="server-icon-placeholder"><%= guild.name.charAt(0).toUpperCase() %></div>
+                        <% } %>
+                    </div>
+                    
+                    <div class="server-info">
+                        <h3><%= guild.name %></h3>
+                        <div class="server-status">
+                            <span class="status-dot <%= guild.isBotIn ? 'online' : 'offline' %>"></span>
+                            <span><%= guild.isBotIn ? 'Bot Active' : 'Not in Server' %></span>
                         </div>
-                    <% } %>
-                </div>
-                
-                <div class="server-info">
-                    <h3><%= guild.name %></h3>
-                    <div class="server-status">
-                        <span class="status-dot <%= guild.isBotIn ? 'online' : 'offline' %>"></span>
-                        <span><%= guild.isBotIn ? 'Bot is active' : 'Bot not in server' %></span>
                     </div>
                 </div>
                 
@@ -619,46 +256,32 @@
                         <i class="fa-solid fa-gear"></i> Manage
                     </a>
                 <% } else { %>
-                    <a href="<%= guild.inviteUrl || client.invite %>" 
-                       target="_blank" 
-                       class="manage-btn invite">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Invite
+                    <a href="<%= guild.inviteUrl || client.invite %>" target="_blank" class="manage-btn invite">
+                        <i class="fa-solid fa-plus"></i> Invite
                     </a>
                 <% } %>
             </div>
         <% }) %>
     </div>
     
-    <!-- Footer -->
     <footer>
         <div class="footer-content">
-            <div class="footer-col footer-brand">
-                <a href="/" class="dashboard-logo" style="font-size: 1.5rem;">
-                    <img src="<%= client.user.displayAvatarURL() %>" alt="Logo">
-                    <%= client.user.username %>
-                </a>
-                <p>Building the next generation of Discord communities.</p>
+            <div class="footer-col">
+                <h4><%= client.user.username %></h4>
+                <p style="color:var(--text-muted); font-size:0.9rem; line-height: 1.6;">Building the next generation of Discord communities with advanced moderation and tools.</p>
             </div>
             <div class="footer-col">
-                <h4>Platform</h4>
+                <h4>Links</h4>
                 <ul>
                     <li><a href="/">Home</a></li>
-                    <li><a href="<%= client.invite %>" target="_blank">Add to Server</a></li>
                     <li><a href="/dashboard">Dashboard</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Community</h4>
-                <ul>
-                    <li><a href="https://discord.gg/qdHMbvtAVd" target="_blank">Support Server</a></li>
-                    <li><a href="#">Vote for Us</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Legal</h4>
                 <ul>
-                    <li><a href="#">Terms</a></li>
-                    <li><a href="#">Privacy</a></li>
+                    <li><a href="/terms">Terms</a></li>
+                    <li><a href="/privacy">Privacy</a></li>
                 </ul>
             </div>
         </div>
@@ -667,73 +290,18 @@
         </div>
     </footer>
 
-    <!-- Particles Script -->
     <script>
-        const canvas = document.getElementById('particles');
-        const ctx = canvas.getContext('2d');
-        
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        
-        let particlesArray;
-        
+        const canvas = document.getElementById('particles'); const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particlesArray = [];
         class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2;
-                this.speedX = (Math.random() * 0.5) - 0.25;
-                this.speedY = (Math.random() * 0.5) - 0.25;
-                this.color = Math.random() > 0.5 ? '#6366f1' : '#ec4899';
-            }
-            
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                
-                if (this.size > 0.2) this.size -= 0.01;
-                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-            }
-            
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
+            constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 2; this.speedX = (Math.random() * 0.5) - 0.25; this.speedY = (Math.random() * 0.5) - 0.25; this.color = Math.random() > 0.5 ? '#6366f1' : '#ec4899'; }
+            update() { this.x += this.speedX; this.y += this.speedY; if (this.size > 0.2) this.size -= 0.01; if (this.x < 0 || this.x > canvas.width) this.speedX *= -1; if (this.y < 0 || this.y > canvas.height) this.speedY *= -1; }
+            draw() { ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
         }
-        
-        function init() {
-            particlesArray = [];
-            for (let i = 0; i < 80; i++) {
-                particlesArray.push(new Particle());
-            }
-        }
-        
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-                particlesArray[i].draw();
-                
-                if (particlesArray[i].size <= 0.3) {
-                    particlesArray.splice(i, 1);
-                    particlesArray.push(new Particle());
-                }
-            }
-            
-            requestAnimationFrame(animate);
-        }
-        
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-        
-        init();
-        animate();
+        function init() { particlesArray = []; for (let i = 0; i < 50; i++) particlesArray.push(new Particle()); }
+        function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); particlesArray[i].draw(); if (particlesArray[i].size <= 0.3) { particlesArray.splice(i, 1); particlesArray.push(new Particle()); } } requestAnimationFrame(animate); }
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }); init(); animate();
     </script>
 </body>
 </html>

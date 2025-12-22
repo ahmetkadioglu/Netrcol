@@ -20,8 +20,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(expressLayouts); 
 app.set('layout', 'layout'); // Varsayılan layout dosyasının adını belirtir
 
-// 3. Statik Dosyalar (img klasörü)
+// 3. Statik Dosyalar
 app.use('/img', express.static(path.join(__dirname, 'img')));
+app.use('/css', express.static(path.join(__dirname, 'css'))); // ✅ EKLE
+app.use('/js', express.static(path.join(__dirname, 'js')));   // ✅ varsa ekle
+
 
 // 4. PASSPORT AYARLARI (Kısaltıldı)
 passport.serializeUser((user, done) => { done(null, user); });
