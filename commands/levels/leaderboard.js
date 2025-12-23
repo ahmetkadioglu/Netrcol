@@ -1,12 +1,25 @@
 // commands/levels/leaderboard.js
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const db = require('../../utils/database');
+const LevelConfig = require('../../models/levelConfig'); // 🟢 YENİ: Ayar modeli eklendi
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('leaderboard')
         .setDescription('Show the top ranking members'),
     async execute(interaction) {
+        // 🛑 1. SİSTEM KONTROLÜ (System Check)
+        // Önce ayara bakıyoruz. Eğer "isActive: false" ise komutu durduruyoruz.
+        const config = await LevelConfig.findOne({ guildId: interaction.guild.id });
+        
+        if (config && config.isActive === false) {
+            return interaction.reply({ 
+                content: '⛔ **The Level System is currently disabled on this server.**', 
+                ephemeral: true 
+            });
+        }
+
+        // 2. Sistem açık ise normal işleyişe devam et
         await interaction.deferReply();
 
         const topUsers = await db.getLeaderboard(interaction.guild.id, 10);

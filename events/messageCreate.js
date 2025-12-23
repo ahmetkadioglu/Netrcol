@@ -1,7 +1,8 @@
-// events/messageCreate.js - FINAL CLEAN VERSION
+// events/messageCreate.js - FINAL UPDATED VERSION
 const { Events, ChannelType, EmbedBuilder } = require('discord.js');
 const db = require('../utils/database');
 const devLogger = require('../utils/devLogger');
+const LevelConfig = require('../models/levelConfig'); // 🟢 YENİ: Model eklendi
 
 // XP Cooldown (10 Saniye)
 const xpCooldowns = new Map();
@@ -15,7 +16,6 @@ module.exports = {
         // 🕵️ 1. ANONİM TICKET SİSTEMİ (DM -> KANAL)
         // ====================================================
         if (message.channel.type === ChannelType.DM) {
-            // Logla
             devLogger.sendLog(message.client, 'dm', {
                 user: message.author,
                 content: message.content,
@@ -138,17 +138,27 @@ module.exports = {
                 return;
             }
 
-            // --- XP SYSTEM ---
+            // --- XP SYSTEM (UPDATED) ---
             const key = `${message.guild.id}-${message.author.id}`;
             const now = Date.now();
+            
+            // Cooldown kontrolü
             if (!xpCooldowns.has(key) || now - xpCooldowns.get(key) > 10000) {
                 xpCooldowns.set(key, now);
+
+                // 🟢 YENİ: Seviye Sistemi Açık mı Kontrolü
+                // Veritabanına bak: Eğer 'isActive: false' ise XP verme ve çık.
+                const config = await LevelConfig.findOne({ guildId: message.guild.id });
+                if (config && config.isActive === false) return; 
+
+                // Sistem açıksa XP ver
                 const userData = await db.addXp(message.author.id, message.guild.id, Math.floor(Math.random() * 11) + 15);
                 if (userData) {
                     const newLvl = Math.floor(Math.sqrt(userData.xp) / 10);
                     if (newLvl > (userData.level || 0)) {
                         await db.setLevel(message.author.id, message.guild.id, newLvl);
-                        message.channel.send(`🎉 **${message.author}** leveled up to **Lvl ${newLvl}**!`).then(m=>setTimeout(()=>m.delete().catch(()=>{}),5000));
+                        message.channel.send(`🎉 **${message.author}** leveled up to **Lvl ${newLvl}**!`)
+                            .then(m => setTimeout(() => m.delete().catch(() => {}), 5000));
                     }
                 }
             }

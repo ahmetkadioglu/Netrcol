@@ -51,7 +51,7 @@ module.exports = {
                 },
                 { 
                     name: '💡 Suggestion System', 
-                    value: `${c('suggest')} · ${c('suggestion-setup')} · ${c('suggestion')}`, 
+                    value: `${c('suggest')} · ${c('suggestion setup')} · ${c('suggestion')}`,
                     inline: false 
                 },
                 { 

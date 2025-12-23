@@ -267,5 +267,30 @@ async function start() {
     }
 }
 
+// ====================================================
+// 📊 12 HOUR RAM HEALTH CHECK (ENGLISH)
+// ====================================================
+setInterval(() => {
+    // Calculate RAM usage (in MB)
+    const ramUsage = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
+    
+    // 🚨 PASTE YOUR LOG CHANNEL ID HERE
+    const logChannelId = '1452714656627167313'; 
+    const channel = client.channels.cache.get(logChannelId);
+
+    if (channel) {
+        const { EmbedBuilder } = require('discord.js');
+        
+        const embed = new EmbedBuilder()
+            .setTitle('🧠 Periodic System Check')
+            .setDescription(`System is running smoothly.\n\n**RAM Usage:** \`${ramUsage} MB\``)
+            .setColor('#00FF00') // Green Color
+            .setTimestamp()
+            .setFooter({ text: 'Netrcol Health Check' });
+
+        channel.send({ embeds: [embed] });
+        console.log(`[RAM CHECK] Current Usage: ${ramUsage} MB`);
+    }
+}, 12 * 60 * 60 * 1000); // 12 Hours (in milliseconds)
 // Motoru Çalıştır
 start();
