@@ -1,66 +1,32 @@
-const express = require('express');
-const app = express();
-const path = require('path');
-const passport = require('passport');
-const session = require('express-session');
-const Strategy = require('passport-discord').Strategy;
-const expressLayouts = require('express-ejs-layouts');
-const bodyParser = require('body-parser'); // Bu satır çok önemli
+// dashboard/server.js (GÜNCEL VE TAM)
+const app = require('./app'); 
 
-module.exports = (client) => {
-    // Session Ayarları
-    app.use(session({
-        secret: 'NetrcolSuperSecretKey',
-        resave: false,
-        saveUninitialized: false
-    }));
+// index.js'ten gelen (client, db) parametrelerini alıyoruz
+module.exports = (client, dbWrapper) => {
+    const port = 3000;
 
-    app.use(passport.initialize());
-    app.use(passport.session());
+    // 1. Botu Uygulamaya Tanıt (Global)
+    app.set('client', client);
 
-    // --- KRİTİK KISIM: Veri Okuyucular ---
-    // Bu satırlar olmazsa form verileri sunucuya BOŞ gider!
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true }));
-    // -------------------------------------
+    // 2. Veritabanını Uygulamaya Tanıt (Global)
+    // Veritabanı bağlantısını garantilemek için kontrol:
+    let activeDb;
 
-    // View Engine
-    app.set('views', path.join(__dirname, 'views'));
-    app.set('view engine', 'ejs');
-    app.use(expressLayouts);
-    app.use(express.static(path.join(__dirname, 'public')));
-
-    // Bot istemcisini isteklere ekle
-    app.use((req, res, next) => {
-        req.client = client;
-        next();
-    });
-
-    // Passport
-    passport.serializeUser((user, done) => done(null, user));
-    passport.deserializeUser((obj, done) => done(null, obj));
-
-    passport.use(new Strategy({
-        clientID: process.env.CLIENT_ID,
-        clientSecret: process.env.CLIENT_SECRET,
-        callbackURL: process.env.CALLBACK_URL,
-        scope: ['identify', 'guilds']
-    }, (accessToken, refreshToken, profile, done) => {
-        process.nextTick(() => done(null, profile));
-    }));
-
-    // Rotalar
-    const mainRoutes = require('./routes/main');
-    const authRoutes = require('./routes/auth');
+    // Native Mongo Driver veya Wrapper kontrolü
+    if (dbWrapper && dbWrapper.collection) {
+        activeDb = dbWrapper; 
+    } else if (dbWrapper && dbWrapper.db && dbWrapper.db.collection) {
+        activeDb = dbWrapper.db; 
+    } else {
+        // En kötü ihtimalle direkt gelen nesneyi dene
+        activeDb = dbWrapper ? (dbWrapper.db || dbWrapper) : null;
+    }
     
-    app.use('/', mainRoutes);
-    app.use('/auth', authRoutes);
+    // Veritabanını 'db' adıyla kaydet (main.js buradan çekecek)
+    app.set('db', activeDb);
 
-    // Başlat
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
-        console.log(`Web Panel Ready: http://0.0.0.0:${PORT}`);
+    // 3. Sunucuyu Başlat
+    app.listen(port, "0.0.0.0", () => {
+        console.log(`Web Panel Ready: http://0.0.0.0:${port}`);
     });
 };

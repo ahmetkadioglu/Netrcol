@@ -9,53 +9,95 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        :root { --primary: #6366f1; --secondary: #a855f7; --accent: #ec4899; --success: #10b981; --bg: #030014; --card-bg: rgba(255, 255, 255, 0.03); --border: rgba(255, 255, 255, 0.1); --text: #ffffff; --text-muted: #94a3b8; }
-        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-        html, body { width: 100%; height: 100%; overflow-x: hidden; }
-        body { background-color: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; display: flex; flex-direction: column; min-height: 100vh; position: relative; }
+        :root {
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --accent: #ec4899;
+            --success: #10b981;
+            --bg: #030014;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #ffffff;
+            --text-muted: #94a3b8;
+        }
 
-        /* FX */
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        html, body { width: 100%; height: 100%; overflow-x: hidden; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            display: flex; flex-direction: column; min-height: 100vh; position: relative;
+        }
+
+        /* --- BACKGROUND FX --- */
         #particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
         .blob { position: fixed; width: 600px; height: 600px; border-radius: 50%; filter: blur(120px); opacity: 0.3; z-index: -2; pointer-events: none; }
         .blob-1 { top: -200px; left: -200px; background: var(--primary); animation: floatBlob 15s infinite alternate; }
         .blob-2 { bottom: -200px; right: -200px; background: var(--secondary); animation: floatBlob 20s infinite alternate-reverse; }
         .blob-3 { top: 40%; left: 40%; width: 400px; height: 400px; background: var(--accent); opacity: 0.15; animation: pulse 10s infinite; }
 
-        /* NAVBAR */
-        nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 15px 5%; width: 100%; position: fixed; top: 0; backdrop-filter: blur(20px); background: rgba(3, 0, 20, 0.6); border-bottom: 1px solid var(--border); z-index: 1000; transition: 0.3s; }
+        /* --- NAVBAR --- */
+        nav {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            padding: 15px 5%; width: 100%; position: fixed; top: 0;
+            backdrop-filter: blur(20px); background: rgba(3, 0, 20, 0.6);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            transition: 0.3s;
+        }
+        
         .logo { font-size: 1.5rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 12px; text-decoration: none; z-index: 1002; justify-self: start; }
         .logo img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary); box-shadow: 0 0 15px var(--primary); }
         
-        .nav-center { display: flex; gap: 5px; background: rgba(255,255,255,0.05); padding: 5px; border-radius: 50px; border: 1px solid var(--border); z-index: 1002; justify-self: center; }
+        .nav-center {
+            display: flex;
+            gap: 5px; background: rgba(255,255,255,0.05); padding: 5px; 
+            border-radius: 50px; border: 1px solid var(--border); z-index: 1002;
+            justify-self: center;
+        }
         .nav-link { color: var(--text-muted); text-decoration: none; font-weight: 600; padding: 8px 20px; border-radius: 30px; transition: 0.3s; font-size: 0.95rem; white-space: nowrap; }
         .nav-link:hover { color: white; background: rgba(255,255,255,0.1); }
-        
+        .nav-link.active { background: var(--primary); color: white; box-shadow: 0 0 15px rgba(99, 102, 241, 0.4); }
+
         .nav-actions { display: flex; gap: 15px; align-items: center; z-index: 1002; justify-self: end; }
         .btn-vote { color: var(--text); text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: 0.3s; font-size: 0.95rem; white-space: nowrap; }
         .btn-vote:hover { color: var(--accent); text-shadow: 0 0 10px var(--accent); }
         
-        /* LOGIN BUTTON */
-        .btn-login { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 10px 25px; border-radius: 12px; text-decoration: none; font-weight: 700; transition: 0.3s; box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); display: flex; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.2); white-space: nowrap; }
+        .btn-login {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; padding: 10px 25px; border-radius: 12px; text-decoration: none; font-weight: 700;
+            transition: 0.3s;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); display: flex; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.2); white-space: nowrap;
+        }
         .btn-login:hover { transform: translateY(-2px); box-shadow: 0 5px 25px rgba(168, 85, 247, 0.5); }
-        /* Logout Button (Kırmızı) */
-        .btn-logout { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.5); padding: 10px 20px; border-radius: 12px; text-decoration: none; font-weight: 600; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
-        .btn-logout:hover { background: rgba(239, 68, 68, 0.4); color: white; border-color: #ef4444; }
-
-        /* Profil Kartı Stili */
-        .nav-user-profile { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.05); padding: 5px 15px 5px 5px; border-radius: 30px; border: 1px solid var(--border); transition: 0.3s; }
-        .nav-user-profile:hover { border-color: var(--primary); background: rgba(255,255,255,0.1); }
-        .nav-user-profile img { width: 32px; height: 32px; border-radius: 50%; }
-        .nav-user-profile span { font-weight: 600; font-size: 0.9rem; color: var(--text); }
 
         .hamburger { display: none; font-size: 1.8rem; color: white; cursor: pointer; z-index: 1003; justify-self: end; }
-        .nav-menu { display: none; position: fixed; top: 0; right: -100%; width: 70%; height: 100vh; background: rgba(10, 10, 20, 0.95); backdrop-filter: blur(20px); flex-direction: column; justify-content: center; align-items: center; transition: 0.4s ease-in-out; border-left: 1px solid var(--border); z-index: 1002; padding: 50px 0; }
+
+        .nav-menu {
+            display: none; position: fixed; top: 0; right: -100%; width: 70%; height: 100vh;
+            background: rgba(10, 10, 20, 0.95); backdrop-filter: blur(20px);
+            flex-direction: column; justify-content: center; align-items: center;
+            transition: 0.4s ease-in-out; border-left: 1px solid var(--border);
+            z-index: 1002; padding: 50px 0;
+        }
         .nav-menu.active { right: 0; display: flex; }
         .mobile-links { display: flex; flex-direction: column; gap: 20px; }
-        .mobile-actions { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; align-items: center; }
+        .mobile-actions { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
 
-        /* SECTIONS */
+        /* --- HERO --- */
         .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 120px 20px 80px; position: relative; }
-        .hero h1 { font-size: 5.5rem; line-height: 1.1; font-weight: 900; background: linear-gradient(to bottom right, #fff 30%, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 25px; animation: fadeInUp 1s ease-out; filter: drop-shadow(0 0 30px rgba(99, 102, 241, 0.3)); }
+        .hero h1 {
+            font-size: 5.5rem; line-height: 1.1; font-weight: 900;
+            background: linear-gradient(to bottom right, #fff 30%, var(--primary), var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 25px; animation: fadeInUp 1s ease-out;
+            filter: drop-shadow(0 0 30px rgba(99, 102, 241, 0.3));
+        }
         .hero p { font-size: 1.4rem; color: var(--text-muted); max-width: 750px; margin-bottom: 50px; animation: fadeInUp 1.2s ease-out; line-height: 1.6; }
         .cta-group { display: flex; gap: 25px; animation: fadeInUp 1.4s ease-out; }
         .btn-hero { padding: 18px 45px; border-radius: 16px; font-weight: 700; font-size: 1.1rem; text-decoration: none; color: white; transition: 0.3s; display: flex; align-items: center; gap: 12px; border: 1px solid rgba(255,255,255,0.1); }
@@ -64,13 +106,22 @@
         .btn-glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
         .btn-glass:hover { background: rgba(255,255,255,0.1); transform: translateY(-5px); }
 
+        /* --- FEATURES --- */
         .features { max-width: 1600px; margin: 0 auto; padding: 100px 5%; }
         .section-header { text-align: center; margin-bottom: 70px; }
         .section-header h2 { font-size: 3.5rem; font-weight: 800; margin-bottom: 15px; }
         .section-header span { background: linear-gradient(to right, var(--secondary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; }
-        .card { background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%); border: 1px solid var(--border); padding: 35px 25px; border-radius: 24px; position: relative; transition: 0.4s; overflow: hidden; height: 100%; display: flex; flex-direction: column; }
-        .card::after { content: ''; position: absolute; inset: 0; border-radius: 24px; padding: 2px; background: linear-gradient(45deg, transparent, var(--primary), transparent); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: 0.4s; }
+        .card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid var(--border); padding: 35px 25px; border-radius: 24px;
+            position: relative; transition: 0.4s; overflow: hidden; height: 100%; display: flex; flex-direction: column;
+        }
+        .card::after {
+            content: ''; position: absolute; inset: 0; border-radius: 24px; padding: 2px;
+            background: linear-gradient(45deg, transparent, var(--primary), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: 0.4s;
+        }
         .card:hover { transform: translateY(-10px); background: rgba(255,255,255,0.05); border-color: var(--primary); }
         .card:hover::after { opacity: 1; }
         .icon-box { width: 60px; height: 60px; border-radius: 18px; background: rgba(255, 255, 255, 0.05); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--primary); margin-bottom: 20px; transition: 0.4s; }
@@ -78,6 +129,7 @@
         .card h3 { font-size: 1.4rem; margin-bottom: 10px; font-weight: 700; }
         .card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
 
+        /* --- COMMANDS --- */
         .commands-section { padding: 100px 5%; background: rgba(0,0,0,0.2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
         .cmd-container { max-width: 1200px; margin: 0 auto; display: flex; gap: 40px; min-height: 500px; }
         .cmd-tabs { flex: 1; display: flex; flex-direction: column; gap: 10px; min-width: 250px; }
@@ -92,19 +144,42 @@
         .cmd-name { font-family: 'Courier New', monospace; color: var(--accent); font-weight: 700; font-size: 1.1rem; }
         .cmd-desc { color: var(--text-muted); font-size: 0.95rem; text-align: right; }
 
+        /* --- STATS --- */
         .stats-wrapper { padding: 100px 0; border-bottom: 1px solid var(--border); }
         .stats-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 50px; text-align: center; }
         .stat-item h2 { font-size: 4rem; font-weight: 900; margin-bottom: 5px; text-shadow: 0 0 30px rgba(255,255,255,0.1); }
         .stat-item p { color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 3px; }
 
+        /* --- FAQ & ADMIN CONTROLS --- */
         .faq { max-width: 1200px; margin: 0 auto; padding: 100px 20px; }
         .faq-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
-        .faq-item { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 16px; padding: 25px; transition: 0.3s; height: 100%; }
+        .faq-item { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 16px; padding: 25px; transition: 0.3s; height: 100%; display: flex; flex-direction: column; }
         .faq-item:hover { border-color: var(--primary); background: rgba(99, 102, 241, 0.05); transform: translateY(-5px); }
         .faq-item h4 { color: #fff; margin-bottom: 15px; display: flex; align-items: center; gap: 12px; font-size: 1.2rem; }
         .faq-item h4 i { color: var(--success); }
-        .faq-item p { color: var(--text-muted); line-height: 1.6; }
+        .faq-item p { color: var(--text-muted); line-height: 1.6; flex-grow: 1; }
 
+        /* Admin Controls */
+        .admin-controls { display: flex; gap: 10px; margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .btn-edit, .btn-save { padding: 8px 15px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; border: none; font-weight: 700; transition: 0.2s; font-family: 'Outfit', sans-serif; display: flex; align-items: center; gap: 6px; }
+        .btn-edit { background: rgba(255,255,255,0.08); color: var(--text-muted); }
+        .btn-edit:hover { background: var(--primary); color: white; }
+        .btn-save { background: var(--success); color: white; display: none; }
+        .btn-save:hover { background: #059669; }
+
+        /* Edit Modal */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 2000; justify-content: center; align-items: center; animation: fadeIn 0.2s ease; }
+        .modal-box { background: #15161b; padding: 40px; border-radius: 24px; width: 90%; max-width: 500px; border: 1px solid var(--border); box-shadow: 0 0 50px rgba(99, 102, 241, 0.2); }
+        .modal-header { font-size: 1.5rem; font-weight: 700; margin-bottom: 25px; color: white; display: flex; align-items: center; gap: 10px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; color: var(--text-muted); margin-bottom: 8px; font-size: 0.9rem; font-weight: 500; }
+        .form-control { width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 12px; color: white; font-family: 'Outfit', sans-serif; transition: 0.3s; }
+        .form-control:focus { border-color: var(--primary); outline: none; background: rgba(99, 102, 241, 0.05); }
+        .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 30px; }
+        .btn-cancel { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
+        .btn-cancel:hover { background: rgba(255,255,255,0.05); color: white; }
+
+        /* --- FOOTER --- */
         footer { background: #02000d; border-top: 1px solid var(--border); padding: 80px 5% 30px; margin-top: auto; }
         .footer-content { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 50px; margin-bottom: 60px; }
         .footer-brand p { color: var(--text-muted); margin-top: 20px; line-height: 1.7; }
@@ -115,15 +190,16 @@
         .footer-col ul li a:hover { color: var(--primary); }
         .copyright { text-align: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 30px; color: var(--text-muted); font-size: 0.9rem; }
 
+        /* --- RESPONSIVE --- */
         @media (max-width: 1200px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 992px) { 
-            .hero h1 { font-size: 3.5rem; } 
+        @media (max-width: 992px) {
+            .hero h1 { font-size: 3.5rem; }
             nav { display: flex; justify-content: space-between; } 
             .nav-center, .nav-actions { display: none; } 
-            .hamburger { display: block; } 
-            .cmd-container { flex-direction: column; } 
-            .footer-content { grid-template-columns: 1fr; text-align: center; } 
-            .faq-grid { grid-template-columns: 1fr; } 
+            .hamburger { display: block; }
+            .cmd-container { flex-direction: column; }
+            .footer-content { grid-template-columns: 1fr; text-align: center; }
+            .faq-grid { grid-template-columns: 1fr; }
         }
         @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } .hero h1 { font-size: 2.8rem; } }
 
@@ -132,9 +208,11 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0% { opacity: 0.1; transform: scale(1); } 50% { opacity: 0.2; transform: scale(1.1); } 100% { opacity: 0.1; transform: scale(1); } }
 
+        /* --- SCROLLBAR --- */
         ::-webkit-scrollbar { width: 8px; background-color: var(--bg); }
         ::-webkit-scrollbar-thumb { background-color: var(--primary); border-radius: 10px; border: 2px solid var(--bg); }
         ::-webkit-scrollbar-track { background-color: var(--surface); }
+
     </style>
 </head>
 <body>
@@ -159,24 +237,7 @@
         <div class="nav-actions">
             <a href="#" class="btn-vote"><i class="fa-solid fa-heart"></i> Vote</a>
             <a href="https://discord.gg/qdHMbvtAVd" class="btn-vote"><i class="fa-brands fa-discord"></i> Support</a>
-            
-            <% if (locals.discordUser) { %>
-                <div class="nav-user-profile">
-                    <img src="https://cdn.discordapp.com/avatars/<%= discordUser.id %>/<%= discordUser.avatar %>.png?size=64" alt="User">
-                    <span><%= discordUser.username %></span>
-                </div>
-                <a href="/settings" class="btn-login">
-                    <i class="fa-solid fa-gauge"></i> Dashboard
-                </a>
-                <a href="/auth/logout" class="btn-logout" title="Logout">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                </a>
-            
-            <% } else { %>
-                <a href="/auth/login" class="btn-login">
-                    <i class="fa-solid fa-right-to-bracket"></i> Login
-                </a>
-            <% } %>
+            <a href="/auth/login" class="btn-login"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
         </div>
 
         <div class="nav-menu" id="navMenu">
@@ -187,18 +248,9 @@
                 <a href="#faq" class="nav-link" onclick="toggleMenu()">FAQ</a>
             </div>
             <div class="mobile-actions">
-                <% if (locals.discordUser) { %>
-                    <div class="nav-user-profile" style="margin-bottom: 10px;">
-                        <img src="https://cdn.discordapp.com/avatars/<%= discordUser.id %>/<%= discordUser.avatar %>.png?size=64" alt="User">
-                        <span><%= discordUser.username %></span>
-                    </div>
-                    <a href="/settings" class="btn-login"><i class="fa-solid fa-gauge"></i> Return to Dashboard</a>
-                    <a href="/auth/logout" class="btn-logout" style="width: 100%; justify-content: center; margin-top: 10px;">
-                        <i class="fa-solid fa-right-from-bracket"></i> Logout
-                    </a>
-                <% } else { %>
-                    <a href="/auth/login" class="btn-login"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
-                <% } %>
+                <a href="#" class="btn-vote"><i class="fa-solid fa-heart"></i> Vote</a>
+                <a href="#" class="btn-vote"><i class="fa-brands fa-discord"></i> Support</a>
+                <a href="/auth/login" class="btn-login"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
             </div>
         </div>
     </nav>
@@ -279,13 +331,28 @@
 
     <section class="faq" id="faq">
         <div class="section-header"><h2>Common <span>Questions</span></h2></div>
-        <div class="faq-grid">
-            <div class="faq-item"><h4><i class="fa-solid fa-circle-check"></i> Is <%= user.username %> free?</h4><p>Yes, all core features including moderation, economy, and tickets are 100% free.</p></div>
-            <div class="faq-item"><h4><i class="fa-solid fa-circle-check"></i> How do I setup logs?</h4><p>Use the <code>/logs-setup</code> command to open the interactive panel and select a channel.</p></div>
-            <div class="faq-item"><h4><i class="fa-solid fa-circle-check"></i> Can I customize it?</h4><p>Absolutely. Welcome messages, log categories, and ticket roles are all customizable.</p></div>
-            <div class="faq-item"><h4><i class="fa-solid fa-circle-check"></i> Is there a Premium version?</h4><p>Currently, all features are free. We may introduce a premium tier for advanced cosmetics later.</p></div>
-            <div class="faq-item"><h4><i class="fa-solid fa-circle-check"></i> What languages are supported?</h4><p>The bot currently supports English and Turkish (selectable via config or dashboard in future).</p></div>
-            <div class="faq-item"><h4><i class="fa-solid fa-circle-check"></i> How do I report a bug?</h4><p>You can report bugs by joining our Support Server and opening a ticket.</p></div>
+        
+        <div class="faq-grid" id="faqGrid">
+            <% faqItems.forEach((item, index) => { %>
+                <div class="faq-item" id="card-<%= index %>" data-db-id="<%= item._id %>">
+                    <h4 class="card-question">
+                        <i class="<%= item.icon || 'fa-solid fa-circle-check' %> card-icon-el"></i> 
+                        <span class="card-title-text"><%= item.question %></span>
+                    </h4>
+                    <p class="card-answer"><%- item.answer %></p>
+
+                    <% if (typeof isGeneralAdmin !== 'undefined' && isGeneralAdmin) { %>
+                        <div class="admin-controls">
+                            <button class="btn-edit" onclick="openEditModal(<%= index %>)">
+                                <i class="fa-solid fa-pen"></i> Edit
+                            </button>
+                            <button class="btn-save" id="save-btn-<%= index %>" onclick="saveCardToDB(<%= index %>)">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                            </button>
+                        </div>
+                    <% } %>
+                </div>
+            <% }) %>
         </div>
     </section>
 
@@ -294,14 +361,143 @@
             <div class="footer-col footer-brand"><a href="#" class="logo"><img src="<%= user.displayAvatarURL() %>" alt="Logo"><%= user.username %></a><p>Building the next generation of Discord communities.</p></div>
             <div class="footer-col"><h4>Platform</h4><ul><li><a href="#features">Features</a></li><li><a href="<%= invite %>">Add to Server</a></li><li><a href="#">Dashboard</a></li></ul></div>
             <div class="footer-col"><h4>Community</h4><ul><li><a href="#">Support Server</a></li><li><a href="#">Vote for Us</a></li></ul></div>
-            <div class="footer-col"><h4>Legal</h4><ul><li><a href="/terms">Terms</a></li><li><a href="/privacy">Privacy</a></li></ul></div>
+            <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Terms</a></li><li><a href="#">Privacy</a></li></ul></div>
         </div>
         <div class="copyright"><p>&copy; 2025 <%= user.username %>. All rights reserved.</p></div>
     </footer>
 
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-box">
+            <div class="modal-header"><i class="fa-solid fa-pen-to-square"></i> Edit Content</div>
+            <input type="hidden" id="editIndex">
+            
+            <div class="form-group">
+                <label>Icon Class (FontAwesome)</label>
+                <input type="text" id="editIcon" class="form-control" placeholder="fa-solid fa-circle-check">
+            </div>
+            
+            <div class="form-group">
+                <label>Title (Question)</label>
+                <input type="text" id="editQuestion" class="form-control">
+            </div>
+            
+            <div class="form-group">
+                <label>Content (Answer)</label>
+                <textarea id="editAnswer" class="form-control" rows="5"></textarea>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-edit btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn-login" onclick="applyChanges()" style="border:none; cursor:pointer;">OK (Preview)</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        function toggleMenu() { const menu = document.getElementById('navMenu'); menu.classList.toggle('active'); }
-        function openTab(evt, tabName) { var i, x, tablinks; x = document.getElementsByClassName("cmd-group"); for (i = 0; i < x.length; i++) { x[i].style.display = "none"; x[i].classList.remove("active"); } tablinks = document.getElementsByClassName("tab-btn"); for (i = 0; i < x.length; i++) { tablinks[i].classList.remove("active"); } document.getElementById(tabName).style.display = "block"; setTimeout(() => document.getElementById(tabName).classList.add("active"), 10); evt.currentTarget.classList.add("active"); }
+        // Mobil menü
+        function toggleMenu() { 
+            const menu = document.getElementById('navMenu'); menu.classList.toggle('active'); 
+        }
+
+        // Sekmeler
+        function openTab(evt, tabName) {
+            var i, x, tablinks;
+            x = document.getElementsByClassName("cmd-group"); for (i = 0; i < x.length; i++) { x[i].style.display = "none"; x[i].classList.remove("active"); }
+            tablinks = document.getElementsByClassName("tab-btn"); for (i = 0; i < x.length; i++) { tablinks[i].classList.remove("active"); }
+            document.getElementById(tabName).style.display = "block"; setTimeout(() => document.getElementById(tabName).classList.add("active"), 10);
+            evt.currentTarget.classList.add("active");
+        }
+
+        // --- 🟢 ADMIN EDIT SCRIPT ---
+        
+        // Modal Aç
+        function openEditModal(index) {
+            const card = document.getElementById(`card-${index}`);
+            const icon = card.querySelector('.card-icon-el').className;
+            const title = card.querySelector('.card-title-text').innerText;
+            const answer = card.querySelector('.card-answer').innerHTML;
+
+            document.getElementById('editIndex').value = index;
+            document.getElementById('editIcon').value = icon;
+            document.getElementById('editQuestion').value = title;
+            document.getElementById('editAnswer').value = answer;
+
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        // Modal Kapat
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        // Değişiklikleri Önizle (OK Butonu)
+        function applyChanges() {
+            const index = document.getElementById('editIndex').value;
+            const newIcon = document.getElementById('editIcon').value;
+            const newTitle = document.getElementById('editQuestion').value;
+            const newAnswer = document.getElementById('editAnswer').value;
+
+            // Kartı Güncelle (Frontend)
+            const card = document.getElementById(`card-${index}`);
+            card.querySelector('.card-icon-el').className = newIcon;
+            card.querySelector('.card-title-text').innerText = newTitle;
+            card.querySelector('.card-answer').innerHTML = newAnswer;
+
+            // Kaydet Butonunu Göster
+            const saveBtn = document.getElementById(`save-btn-${index}`);
+            saveBtn.style.display = 'inline-flex';
+            saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save (Unsaved)';
+            saveBtn.style.background = '#eab308'; // Sarı (Kaydedilmedi)
+            
+            closeModal();
+        }
+
+        // Veritabanına Kaydet (Save Butonu)
+        async function saveCardToDB(index) {
+            const card = document.getElementById(`card-${index}`);
+            const dbId = card.getAttribute('data-db-id');
+            const saveBtn = document.getElementById(`save-btn-${index}`);
+
+            const data = {
+                id: dbId,
+                icon: card.querySelector('.card-icon-el').className,
+                question: card.querySelector('.card-title-text').innerText,
+                answer: card.querySelector('.card-answer').innerHTML,
+                order: index + 1
+            };
+
+            saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+
+            try {
+                // Main.js'teki yeni özel rotaya istek atıyoruz
+                const response = await fetch('/update-faq', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    saveBtn.style.background = 'var(--success)';
+                    saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> Saved!';
+                    
+                    if (result.id) card.setAttribute('data-db-id', result.id);
+                    
+                    setTimeout(() => { saveBtn.style.display = 'none'; }, 2000);
+                } else {
+                    alert('Error saving: ' + (result.error || 'Unknown error'));
+                    saveBtn.innerHTML = 'Error';
+                    saveBtn.style.background = '#ef4444';
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Connection error!');
+                saveBtn.innerHTML = 'Error';
+            }
+        }
+
+        // Particles
         const canvas = document.getElementById('particles'); const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight;
         let particlesArray; class Particle { constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 2; this.speedX = (Math.random() * 0.5) - 0.25; this.speedY = (Math.random() * 0.5) - 0.25; this.color = Math.random() > 0.5 ? '#6366f1' : '#ec4899'; } update() { this.x += this.speedX; this.y += this.speedY; if (this.size > 0.2) this.size -= 0.01; if (this.x < 0 || this.x > canvas.width) this.speedX *= -1; if (this.y < 0 || this.y > canvas.height) this.speedY *= -1; } draw() { ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); } } function init() { particlesArray = []; for (let i=0; i<80; i++) particlesArray.push(new Particle()); } function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); for (let i=0; i<particlesArray.length; i++) { particlesArray[i].update(); particlesArray[i].draw(); if (particlesArray[i].size <= 0.3) { particlesArray.splice(i, 1); particlesArray.push(new Particle()); } } requestAnimationFrame(animate); } window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }); init(); animate();
     </script>
